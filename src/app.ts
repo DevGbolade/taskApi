@@ -1,3 +1,4 @@
+import 'reflect-metadata'; 
 import Logger from "bunyan";
 import { config } from "./config/config";  
 const log: Logger = config.createLogger('server');

@@ -15,7 +15,9 @@ import helmet from "helmet";
 import cors from "cors";
 import cookieSession from "cookie-session";
 import compression from "compression";
-import rateLimit from "express-rate-limit";
+import { serveSwagger, setupSwagger } from "./docs/swagger";
+import { rateLimiterMiddleware } from "./middleware/rateLimit.middleware";
+import authRoutes from "./routes/auth.routes";
 const SERVER_PORT = 5070;
 const log: Logger = config.createLogger("server");
 
@@ -28,6 +30,7 @@ export class Server {
   public start() {
     this.securityMiddleware(this.app);
     this.standardMiddleware(this.app);
+    this.routeMiddleware(this.app);
     this.globalErrorHandler(this.app);
     this.startServer(this.app);
   }
@@ -51,13 +54,8 @@ export class Server {
     );
     app.use(helmet());
     app.use(hpp());
-
-    const limiter = rateLimit({
-      windowMs: 15 * 60 * 1000,
-      max: 100,
-      message: "Too many requests, please try again later.",
-    });
-    app.use(limiter);
+    app.use(rateLimiterMiddleware);
+   
   }
   private async standardMiddleware(app: Application) {
     app.use(compression());
@@ -72,7 +70,7 @@ export class Server {
     });
 
     app.use(
-      (error: any, _req: Request, res: Response, next: NextFunction): void => {
+      (error: any, _req: Request, _res: Response, next: NextFunction): void => {
         log.error(error);
         next();
       }
@@ -93,6 +91,9 @@ export class Server {
     });
   }
 
-  private async routeMiddleware(app: Application) {}
-  private async apiMonitoring(app: Application) {}
+  private async routeMiddleware(app: Application) {
+    app.use("/api/docs", serveSwagger, setupSwagger);
+    app.use('/api/auth', authRoutes);
+  }
+  private async apiMonitoring(_app: Application) {}
 }
