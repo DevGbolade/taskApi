@@ -6,10 +6,11 @@ declare module 'express' {
   }
 }
 
+
 export interface IUser {
   id?: number;
   username: string;
   email: string;
   password: string;
-  role: 'admin' | 'user';
+  role?: "admin" | "user";
 }

@@ -16,7 +16,7 @@ export class User {
   password!: string;
 
   @Column({ type: 'enum', enum: ['admin', 'user'], default: 'user' })
-  role!: 'admin' | 'user';
+  role?: 'admin' | 'user';
 
   @OneToMany(() => Task, (task) => task.user)
   tasks!: Task[];
