@@ -2,9 +2,7 @@ import { DataSource } from 'typeorm';
 import 'dotenv/config';
 import { config } from './config';
 import Logger from 'bunyan';
-import { User } from '@/entities/user.entity';
-import { Task } from '@/entities/task.entity';
-
+const isProduction = process.env.NODE_ENV === 'production';
 const log: Logger = config.createLogger("Database");
 
 export const AppDataSource = new DataSource({
@@ -14,8 +12,12 @@ export const AppDataSource = new DataSource({
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [User, Task],
+    entities: isProduction 
+    ? [__dirname + '/../entities/*.js']  
+    : ['src/entities/*.ts'],
     synchronize: true,
+    uuidExtension: 'uuid-ossp',
+    logging: !isProduction,
 });
 
 export const startDatabase = async () => {

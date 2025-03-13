@@ -18,6 +18,7 @@ import compression from "compression";
 import { serveSwagger, setupSwagger } from "./docs/swagger";
 import { rateLimiterMiddleware } from "./middleware/rateLimit.middleware";
 import authRoutes from "./routes/auth.routes";
+import { taskRoutes } from "./routes/task.routes";
 const SERVER_PORT = 5070;
 const log: Logger = config.createLogger("server");
 
@@ -94,6 +95,8 @@ export class Server {
   private async routeMiddleware(app: Application) {
     app.use("/api/docs", serveSwagger, setupSwagger);
     app.use('/api/auth', authRoutes);
+    app.use('/api/tasks', taskRoutes);
+
   }
   private async apiMonitoring(_app: Application) {}
 }

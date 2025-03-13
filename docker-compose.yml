@@ -1,0 +1,56 @@
+version: '3.9'
+
+networks:
+  task_network:
+    name: task_network
+
+volumes:
+  postgres_data:
+
+services:
+  api:
+    build:
+      context: .
+      args:
+        - PORT=${PORT}
+    container_name: task_api
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - '${PORT}:${PORT}'
+    environment:
+      - NODE_ENV=production
+      - PORT=${PORT}
+      - DB_HOST=task_db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+    env_file:
+      - .env.prod
+    volumes:
+      - /app/node_modules
+    restart: always
+    networks:
+      - task_network
+
+  db:
+    image: postgres:15-alpine
+    container_name: task_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - '5444:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - task_network
