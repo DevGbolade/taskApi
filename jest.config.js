@@ -8,5 +8,8 @@ module.exports = {
   testMatch: ['**/__tests__/**/*.test.ts'], // Look for test files in __tests__
   clearMocks: true,
   coverageDirectory: 'coverage', // Store test coverage reports
-  collectCoverage: true
+  collectCoverage: true,
+  moduleNameMapper: {
+    '@/(.*)': ['<rootDir>/src/$1']
+  }
 };
