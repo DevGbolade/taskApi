@@ -19,7 +19,7 @@ import { serveSwagger, setupSwagger } from "./docs/swagger";
 import { rateLimiterMiddleware } from "./middleware/rateLimit.middleware";
 import authRoutes from "./routes/auth.routes";
 import { taskRoutes } from "./routes/task.routes";
-const SERVER_PORT = 5070;
+const SERVER_PORT = process.env.PORT;
 const log: Logger = config.createLogger("server");
 
 export class Server {
