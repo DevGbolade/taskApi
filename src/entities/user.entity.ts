@@ -3,7 +3,7 @@ import { Task } from './task.entity';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id!: number; 
 
   @Column({ unique: true })

@@ -1,7 +1,7 @@
 import { AppDataSource } from '../config/database';
 
 import { faker } from '@faker-js/faker';
-import { Task } from '@/entities/task.entity';
+import { Task, TaskPriority, TaskStatus } from '@/entities/task.entity';
 import { User } from '@/entities/user.entity';
 import { hashPassword } from '@/utils/bcrypt.utils';
 import Logger from 'bunyan';
@@ -29,8 +29,8 @@ const seedDatabase = async () => {
         taskRepository.create({
             title: faker.lorem.words(3),
             description: faker.lorem.sentences(2),
-            priority: faker.helpers.arrayElement(['Low', 'Medium', 'High']),
-            status: faker.helpers.arrayElement(['Pending', 'Completed']),
+            priority: faker.helpers.arrayElement([TaskPriority.LOW, TaskPriority.MEDIUM, TaskPriority.HIGH]),
+            status: faker.helpers.arrayElement([TaskStatus.PENDING, TaskStatus.COMPLETED]),
             dueDate: faker.date.soon(),
             user: users[1]
         })

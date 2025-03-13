@@ -1,7 +1,7 @@
 import { verifyToken } from '@/utils/jwt.utils';
 import { Request, Response, NextFunction } from 'express';
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = (req: Request, res: Response, next: NextFunction): any => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) {
     return res.status(401).json({ success: false, error: 'Authentication token required' });
