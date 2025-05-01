@@ -1,6 +1,8 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const options = {
     definition: {
         openapi: '3.0.0',
@@ -21,7 +23,9 @@ const options = {
         },
         security: [{ BearerAuth: [] }],
     },
-    apis: ['./src/routes/*.ts'], 
+    apis: isProduction 
+    ? ['./dist/routes/*.js']
+    : ['./src/routes/*.ts'], 
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

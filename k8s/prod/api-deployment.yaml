@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-api
+  labels:
+    app: task-api
+    environment: production
+    version: '1.0.0'
+  annotations:
+    description: 'Task Management API Deployment'
+    created_at: '{{date}}'
+spec:
+  replicas: 2 # It's always good to have more than 1 replica for high availability
+  selector:
+    matchLabels:
+      app: task-api
+  template:
+    metadata:
+      labels:
+        app: task-api
+    spec:
+      containers:
+        - name: task-api
+          image: docker.io/rozay10/task-management-api:prod
+          imagePullPolicy: Always # Ensure the latest image is pulled
+          envFrom:
+            - configMapRef:
+                name: api-config
+            - secretRef:
+                name: api-secret
+          resources:
+            limits:
+              memory: '512Mi'
+              cpu: '300m'
+            requests:
+              memory: '256Mi'
+              cpu: '100m'
+          ports:
+            - containerPort: 5070
+          livenessProbe: # To check if your app is still alive
+            httpGet:
+              path: /healthz
+              port: 5070
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe: # To check if your app is ready to serve traffic
+            httpGet:
+              path: /healthz
+              port: 5070
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      restartPolicy: Always # Ensures the pod is restarted in case it fails
+  strategy:
+    type: RollingUpdate # Defines how updates happen, this is the default strategy
+    rollingUpdate:
+      maxSurge: 1 # Controls the max number of pods created above the desired replicas
+      maxUnavailable: 1 # Controls the max number of unavailable pods during the update
+

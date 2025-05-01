@@ -4,7 +4,7 @@ metadata:
   name: api-config
 data:
   NODE_ENV: production
-  PORT: '5070'
+  PORT: '5075'
   DB_HOST: task-db
   DB_PORT: '5432'
   DB_USER: postgres

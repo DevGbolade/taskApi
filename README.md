@@ -1,3 +1,7 @@
+Here's the updated `README.md` with the addition of health check routes:
+
+---
+
 # **Task Management API** 🚀
 
 A RESTful API for managing tasks with authentication, role-based access control (RBAC), request validation, rate limiting, and security features.
@@ -43,7 +47,7 @@ API docs available at `http://localhost:5070/api/docs`
 
 ## **🐳 Running with Docker**
 
-1. Ensure Docker is installed and running
+1. Ensure Docker is installed and running.
 2. Run the API and database using Docker Compose:
 
    ```bash
@@ -75,6 +79,12 @@ API docs available at `http://localhost:5070/api/docs`
 | PUT    | `/api/tasks/:id` | Update a task     |
 | DELETE | `/api/tasks/:id` | Delete a task     |
 
+### **🩺 Health Check**
+
+| Method | Endpoint       | Description                     |
+| ------ | -------------- | ------------------------------- |
+| GET    | `/api/healthz` | Check if the service is healthy |
+
 ---
 
 ## **📜 Environment Variables**
@@ -95,4 +105,102 @@ REFRESH_TOKEN_SECRET="your_refresh_secret"
 
 ---
 
+## **📡 Kubernetes Setup**
+
+### **Setting up kubectl for Minikube**
+
+1. **Install Minikube** and start your cluster:
+
+   ```bash
+   minikube start
+   ```
+
+2. **Configure kubectl** to use the Minikube context:
+
+   ```bash
+   kubectl config use-context minikube
+   ```
+
+3. **Check the Minikube cluster**:
+
+   ```bash
+   kubectl cluster-info
+   ```
+
+4. **Deploy your application** to Minikube:
+
+   - Apply the Kubernetes deployment YAML:
+
+     ```bash
+          kubectl apply -f k8s/dev/
+     ```
+
+5. **Access the API from Minikube**:
+
+   You can expose your application via a Minikube service:
+
+   ```bash
+   minikube service task-api --url
+   ```
+
+   This will give you the URL to access your API.
+
+---
+
+### **Setting up kubectl for Google Kubernetes Engine (GKE)**
+
+1. **Install Google Cloud SDK** if you haven’t already:
+
+   Follow the instructions [here](https://cloud.google.com/sdk/docs/install).
+
+2. **Authenticate with GCP**:
+
+   ```bash
+   gcloud auth login
+   ```
+
+3. **Set your Google Cloud project, region and zone**:
+
+   ```bash
+   gcloud config set project <YOUR_PROJECT_ID>
+   gcloud config set compute/region <REGION>
+   gcloud config set compute/zone <ZONE>
+   ```
+
+4. **Get credentials for your GKE cluster**:
+
+   ```bash
+   gcloud container clusters get-credentials <CLUSTER_NAME> --zone <ZONE> --project <YOUR_PROJECT_ID>
+   ```
+
+5. **Verify your GKE cluster context**:
+
+   ```bash
+   kubectl cluster-info
+   ```
+
+6. **Deploy your application** to GKE:
+
+   - Apply the Kubernetes deployment YAML:
+
+     ```bash
+     kubectl apply -f k8s/prod/
+     ```
+
+   This will deploy your application in the production environment based on the Kubernetes configurations stored in the `k8s/prod/` directory.
+
+7. **Access the API on GKE**:
+
+   If your cluster is public, you can get the external IP of your service:
+
+   ```bash
+   kubectl get svc task-api
+   ```
+
+   This will provide the IP address you can use to access your API.
+
+---
+
 🔥 **Happy Coding!** 🚀
+
+---

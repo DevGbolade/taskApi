@@ -96,6 +96,9 @@ export class Server {
     app.use("/api/docs", serveSwagger, setupSwagger);
     app.use('/api/auth', authRoutes);
     app.use('/api/tasks', taskRoutes);
+    app.get("/healthz", (_, res) => {
+      res.status(200).json({ status: "ok" });
+    });
 
   }
   private async apiMonitoring(_app: Application) {}

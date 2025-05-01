@@ -4,14 +4,18 @@
     WORKDIR /app
     
     # Copy package files and install dependencies
-    COPY package.json package-lock.json ./
+    COPY package*.json ./
     RUN npm install
     
     # Copy the rest of the application code
     COPY . .
     
-    # Build the application
+    # ✅ Rename .env.prod to .env inside the builder container
+    COPY .env.prod .env
+    
+    # Now build the app (if any env vars are needed at build time)
     RUN npm run build
+    
     
     # ---- Stage 2: Run ----
     FROM node:18-alpine
@@ -22,17 +26,12 @@
     COPY --from=builder /app/node_modules ./node_modules
     COPY --from=builder /app/dist ./dist
     COPY --from=builder /app/package.json ./package.json
-    COPY --from=builder /app/.env.prod ./.env.prod
-    
-    # Copy and make the entrypoint script executable
-    COPY entrypoint.sh /entrypoint.sh
-    RUN chmod +x /entrypoint.sh
+    COPY --from=builder /app/.env ./.
     
     # Expose the configurable port
     ARG PORT=5070
     ENV PORT=${PORT}
     EXPOSE ${PORT}
     
-    # Use the entrypoint script
-    ENTRYPOINT ["/entrypoint.sh"]
     CMD ["node", "dist/app.js"]
+    

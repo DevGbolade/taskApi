@@ -3,8 +3,8 @@
     "target": "ES6",
     "module": "CommonJS",
     "moduleResolution": "node",
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
     "strictPropertyInitialization": false,
     "esModuleInterop": true,
@@ -19,5 +19,6 @@
     },
     "plugins": [{ "transform": "typescript-transform-paths" }, { "transform": "typescript-transform-paths", "afterDeclarations": true }]
   },
-  "exclude": ["node_modules", "**/__tests__/**"]
+  "exclude": ["node_modules", "**/__tests__/**"],
+  "include": ["src"]
 }

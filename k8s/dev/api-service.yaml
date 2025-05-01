@@ -5,8 +5,9 @@ metadata:
 spec:
   selector:
     app: task-api
+  type: NodePort
   ports:
     - protocol: TCP
-      port: 5070
-      targetPort: 5070
-  type: ClusterIP
+      port: 5075
+      targetPort: 5075
+      nodePort: 30080
